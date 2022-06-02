@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Marca;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MarcaController extends Controller
 {
@@ -32,9 +33,15 @@ class MarcaController extends Controller
      */
     public function store(Request $request)
     {
-        
         $request->validate($this->marca->rules(), $this->marca->feedback());
-        $marca = $this->marca->create($request->all());
+
+        $imagem = $request->file('imagem');
+        $imagem_urn = $imagem->store('imagens','public');
+        $marca = $this->marca->create([
+            'nome' => $request->get('nome'),
+            'imagem' => $imagem_urn
+        ]);
+
         return response()->json($marca, 201);
     }
 
@@ -79,12 +86,20 @@ class MarcaController extends Controller
             $request->validate($regrasDinamicas, $marca->feedback());
         }else
             $request->validate($marca->rules(), $marca->feedback());
-            
-        $marca->update($request->all());
+
+        if($request->file('imagem'))
+            Storage::disk('public')->delete($marca->imagem);
+
+        $imagem = $request->file('imagem');
+        $imagem_urn = $imagem->store('imagens','public');
+        $marca->update([
+            'nome' => $request->get('nome'),
+            'imagem' => $imagem_urn
+        ]);
+
         return response()->json($marca, 200);
     }
 
-    //@param  \App\Models\Marca  $marca
     /**
      * Remove the specified resource from storage.
      *
@@ -93,10 +108,11 @@ class MarcaController extends Controller
      */
     public function destroy($id)
     {
-        // $marca->delete();
         $marca = $this->marca->find($id);
         if ($marca === null)
             return response()->json(['erro' => 'Ipossível deletar. Recurso não encontrado'], 404);
+        Storage::disk('public')->delete($marca->imagem);
+
         $marca->delete();
         return response()->json(['msg' => 'A marca foi removida com sucesso!'], 200);
     }
