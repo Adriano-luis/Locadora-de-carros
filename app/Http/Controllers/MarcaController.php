@@ -26,17 +26,14 @@ class MarcaController extends Controller
             $atributos_modelos = 'modelos:id,'.$request->get('atributos_modelos');
             $marcaRepository->selectAttibutosRegristrosRelacionados($atributos_modelos);
 
-        }else{
+        }else
             $marcaRepository->selectAttibutosRegristrosRelacionados('modelos');
-        }
-
-        if($request->has('filtro')){
+        
+        if($request->has('filtro'))
             $marcaRepository->filtro($request->get('filtro'));
-        }
 
-        if($request->has('atributos')){
+        if($request->has('atributos'))
             $marcaRepository->selectAtributos($request->get('atributos'));
-        }
 
 
         return response()->json($marcaRepository->getResultado(), 200);
@@ -46,7 +43,8 @@ class MarcaController extends Controller
 
 
 
-        //-----------------------------------------------------------------------------------
+
+        
 
         // $marcas = array();
         // if($request->has('atributos')){

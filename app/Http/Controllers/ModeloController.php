@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Modelo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Repositories\ModeloRepository;
 
 class ModeloController extends Controller
 {
@@ -19,30 +20,54 @@ class ModeloController extends Controller
      */
     public function index(Request $request)
     {
-        $modelos = array();
-        if($request->has('atributos')){
-            $atributos = $request->get('atributos');
+        $modeloRepository = new ModeloRepository($this->modelo);
 
-            if($request->has('atributos_marca')){
-                $atributos_marca = $request->get('atributos_marca');
-                $modelos = $this->modelo->selectRaw($atributos)->with('marca:id,'.$atributos_marca)->get();
-            }else{
-                $modelos = $this->modelo->selectRaw($atributos)->with('marca')->get();
-            }
+        if($request->has('atributos_marca')){
+            $atributos_marca = 'marca:id,'.$request->get('atributos_marca');
+            $modeloRepository->selectAttibutosRegristrosRelacionados($atributos_marca);
+        }else
+            $modeloRepository->selectAttibutosRegristrosRelacionados('marca');
 
-            if($request->has('filtro')){
-                $filtros = explode(';',$request->get('filtro'));
-                foreach($filtros as $condicao){
-                    $c = explode(':',$condicao);
-                    $modelos = $modelos->where($c[0],$c[1],$c[2]);
-                }
-            }
+        if($request->has('filtro'))
+            $modeloRepository->filtro($request->get('filtro'));
 
-        }else{
-            $modelos = $this->modelo->with('marca')->get();
-        }
-        //$this->modelo->with('marca')->get()
-        return response()->json($modelos, 200);
+        if($request->has('atributos'))
+            $modeloRepository->selectAtributos($request->get('atributos'));
+
+        return response()->json($modeloRepository->getResultado(), 200);
+
+
+
+
+
+
+
+
+        
+        // $modelos = array();
+        // if($request->has('atributos')){
+        //     $atributos = $request->get('atributos');
+
+        //     if($request->has('atributos_marca')){
+        //         $atributos_marca = $request->get('atributos_marca');
+        //         $modelos = $this->modelo->selectRaw($atributos)->with('marca:id,'.$atributos_marca)->get();
+        //     }else{
+        //         $modelos = $this->modelo->selectRaw($atributos)->with('marca')->get();
+        //     }
+
+        //     if($request->has('filtro')){
+        //         $filtros = explode(';',$request->get('filtro'));
+        //         foreach($filtros as $condicao){
+        //             $c = explode(':',$condicao);
+        //             $modelos = $modelos->where($c[0],$c[1],$c[2]);
+        //         }
+        //     }
+
+        // }else{
+        //     $modelos = $this->modelo->with('marca')->get();
+        // }
+
+        // return response()->json($modelos, 200);
     }
 
     /**
