@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Marca;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Repositories\MarcaRepository;
 
 class MarcaController extends Controller
 {
@@ -19,9 +20,58 @@ class MarcaController extends Controller
      */
     public function index(Request $request)
     {
-        // $marcas = Marca::all();
-        $marcas = $this->marca->with('modelos')->get();
-        return response()->json($marcas, 200);
+        $marcaRepository = new MarcaRepository($this->marca);
+
+        if($request->has('atributos_modelos')){
+            $atributos_modelos = 'modelos:id,'.$request->get('atributos_modelos');
+            $marcaRepository->selectAttibutosRegristrosRelacionados($atributos_modelos);
+
+        }else{
+            $marcaRepository->selectAttibutosRegristrosRelacionados('modelos');
+        }
+
+        if($request->has('filtro')){
+            $marcaRepository->filtro($request->get('filtro'));
+        }
+
+        if($request->has('atributos')){
+            $marcaRepository->selectAtributos($request->get('atributos'));
+        }
+
+
+        return response()->json($marcaRepository->getResultado(), 200);
+
+
+
+
+
+
+        //-----------------------------------------------------------------------------------
+
+        // $marcas = array();
+        // if($request->has('atributos')){
+        //     $atributos = $request->get('atributos');
+
+        //     if($request->has('atributos_modelos')){
+        //         $atributos_modelos = $request->get('atributos_modelos');
+        //         $marcas = $this->marca->selectRaw($atributos)->with('modelos:id,'.$atributos_modelos)->get();
+        //     }else{
+        //         $marcas = $this->marca->selectRaw($atributos)->with('modelos')->get();
+        //     }
+
+        //     if($request->has('filtro')){
+        //         $filtros = explode(';',$request->get('filtro'));
+        //         foreach($filtros as $condicao){
+        //             $c = explode(':',$condicao);
+        //             $marcas = $marcas->where($c[0],$c[1],$c[2]);
+        //         }
+        //     }
+
+        // }else{
+        //     $marcas = $this->marca->with('modelos')->get();
+        // }
+
+        // return response()->json($marcas, 200);
     }
 
 
