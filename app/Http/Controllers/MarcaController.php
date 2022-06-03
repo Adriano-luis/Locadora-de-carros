@@ -17,10 +17,10 @@ class MarcaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // $marcas = Marca::all();
-        $marcas = $this->marca->all();
+        $marcas = $this->marca->with('modelos')->get();
         return response()->json($marcas, 200);
     }
 
@@ -34,7 +34,6 @@ class MarcaController extends Controller
     public function store(Request $request)
     {
         $request->validate($this->marca->rules(), $this->marca->feedback());
-
         $imagem = $request->file('imagem');
         $imagem_urn = $imagem->store('imagens','public');
         $marca = $this->marca->create([
@@ -54,9 +53,10 @@ class MarcaController extends Controller
      */
     public function show($id)
     {
-        $marca = $this->marca->find($id);
+        $marca = $this->marca->with('modelos')->find($id);
         if ($marca === null)
             return response()->json(['erro' => 'Recurso não encontrado'], 404);
+
         return response()->json($marca, 200);
     }
 
@@ -72,7 +72,6 @@ class MarcaController extends Controller
     {
         // $marca->update($request->all());
         $marca = $this->marca->find($id);
-
         if ($marca === null)
             return response()->json(['erro' => 'Impossível atualizar. Recurso não encontrado'], 404);
 
@@ -87,15 +86,15 @@ class MarcaController extends Controller
         }else
             $request->validate($marca->rules(), $marca->feedback());
 
-        if($request->file('imagem'))
-            Storage::disk('public')->delete($marca->imagem);
 
-        $imagem = $request->file('imagem');
-        $imagem_urn = $imagem->store('imagens','public');
-        $marca->update([
-            'nome' => $request->get('nome'),
-            'imagem' => $imagem_urn
-        ]);
+        $marca->fill($request->all());
+        if($request->file('imagem')){
+            Storage::disk('public')->delete($marca->imagem);
+            $imagem = $request->file('imagem');
+            $imagem_urn = $imagem->store('imagens','public');
+            $marca->imagem = $imagem_urn;
+        }
+        $marca->save();
 
         return response()->json($marca, 200);
     }
