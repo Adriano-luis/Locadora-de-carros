@@ -158,7 +158,7 @@ class ModeloController extends Controller
     {
         $modelo = $this->modelo->find($id);
         if($modelo === null)
-            return response()->json(['erro' => 'Ipossível deletar. Recurso não encontrado'], 404);
+            return response()->json(['erro' => 'Impossível deletar. Recurso não encontrado'], 404);
         
         Storage::disk('public')->delete($modelo->imagem);
         $modelo->delete();

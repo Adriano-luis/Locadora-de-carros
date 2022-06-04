@@ -157,7 +157,7 @@ class MarcaController extends Controller
     {
         $marca = $this->marca->find($id);
         if ($marca === null)
-            return response()->json(['erro' => 'Ipossível deletar. Recurso não encontrado'], 404);
+            return response()->json(['erro' => 'Impossível deletar. Recurso não encontrado'], 404);
         Storage::disk('public')->delete($marca->imagem);
 
         $marca->delete();
