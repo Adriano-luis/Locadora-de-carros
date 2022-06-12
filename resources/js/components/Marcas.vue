@@ -69,7 +69,16 @@
                 arquivoImagem: [],
             }
         },
+        computed: {
+            token(){
+                let token = document.cookie.split(';').find(indice => {
+                    return indice.includes('token=')
+                })
+                token = token.split('=')[1]
 
+                return 'Bearer '+ token
+            }
+        },
         methods: {
             carregarImagem(e){
                 this.arquivoImagem = e.target.files
@@ -83,6 +92,7 @@
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'Accept': 'application/json',
+                        'Authorization': this.token
                     }
                 }
 
