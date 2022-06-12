@@ -29,7 +29,7 @@
                 <!-- Inicio do card de listagem -->
                 <card-component titilo="Relação de Marcas">
                     <template v-slot:conteudo>
-                        <table-component></table-component>
+                        <table-component :dados="marcas" :titulos="['ID', 'Nome', 'Imagem']"></table-component>
                     </template>
                     <template v-slot:rodape>
                         <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#modalMarca">Adicionar</button>
@@ -73,6 +73,7 @@
                 arquivoImagem: [],
                 transacaoStatus: '',
                 transacaoDetalhes: {},
+                marcas: [],
             }
         },
         computed: {
@@ -86,6 +87,21 @@
             }
         },
         methods: {
+            carregarLista(){
+                let config = {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': this.token
+                    }
+                }
+                axios.get(this.urlBase, config)
+                    .then(response => {
+                        this.marcas = response.data
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+            },
             carregarImagem(e){
                 this.arquivoImagem = e.target.files
             },
@@ -118,6 +134,9 @@
                         } 
                     })
             }
+        },
+        mounted(){
+            this.carregarLista()
         }
     }
 </script>
