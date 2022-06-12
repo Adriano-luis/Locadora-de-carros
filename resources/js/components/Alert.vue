@@ -1,14 +1,21 @@
 <template>
     <div :class="estilo" role="alert">
-        Mensagem de feedback
-        {{tipo}}
+        {{titulo}}
+        <hr>
+        <span>{{detalhes.mensagem}}</span>
+        <br>
+        <ul v-if="detalhes.dados">
+            <li v-for="e, key in detalhes.dados" :key="key">
+                {{e[0]}}
+            </li>
+        </ul>
     </div>
 </template>
 
 <script>
     export default {
         props: [
-            'tipo'
+            'tipo', 'titulo', 'detalhes'
         ],
         computed: {
             estilo(){
