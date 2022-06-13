@@ -29,7 +29,7 @@
                 <!-- Inicio do card de listagem -->
                 <card-component titilo="Relação de Marcas">
                     <template v-slot:conteudo>
-                        <table-component :dados="marcas" :titulos="{
+                        <table-component :dados="marcas.data" :titulos="{
                             id: {titulo: 'ID', tipo: 'texto'},
                             nome: {titulo: 'nome', tipo: 'texto'},
                             imagem: {titulo: 'imagem', tipo: 'imagem'},
@@ -37,7 +37,18 @@
                         }"></table-component>
                     </template>
                     <template v-slot:rodape>
-                        <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#modalMarca">Adicionar</button>
+                        <div class="row">
+                            <div class="col-10">
+                                <paginate-component>
+                                    <li v-for="l, key in marcas.links" :key="key" :class="l.active ? 'page-item active' : 'page-item'" @click="paginacao(l)">
+                                        <a class="page-link" v-html="l.label"></a>
+                                    </li>
+                                </paginate-component>
+                            </div>
+                            <div class="col">
+                                <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#modalMarca">Adicionar</button>
+                            </div>
+                        </div>
                     </template>
                 </card-component>
                 <!-- Fim do card de listagem -->
@@ -78,7 +89,7 @@
                 arquivoImagem: [],
                 transacaoStatus: '',
                 transacaoDetalhes: {},
-                marcas: [],
+                marcas: {data: []},
             }
         },
         computed: {
@@ -138,6 +149,12 @@
                             dados: error.response.data.errors
                         } 
                     })
+            },
+            paginacao(l){
+                if(l.url){
+                    this.urlBase = l.url
+                    this.carregarLista()
+                }
             }
         },
         mounted(){
