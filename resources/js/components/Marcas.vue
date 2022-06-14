@@ -8,19 +8,19 @@
                         <div class="form-row">
                             <div class=" col mb-3">
                                 <input-container-component  titulo="ID"  id="inputId" id-help="idHelp" texto-ajuda="Campo opcional. Informe o Id da Marca.">
-                                    <input type="number" class="form-control" id="inputId" aria-describedby="idHelp">
+                                    <input type="number" class="form-control" id="inputId" aria-describedby="idHelp" v-model="busca.id">
                                 </input-container-component>
                             </div>
                             <div class=" col mb-3">
                                 <input-container-component  titulo="Nome"  id="inputNome" id-help="nomeHelp" texto-ajuda="Campo opcional. Informe o nome da Marca.">
-                                    <input type="text" class="form-control" id="inputNome" aria-describedby="nomeHelp">
+                                    <input type="text" class="form-control" id="inputNome" aria-describedby="nomeHelp" v-model="busca.nome">
                                 </input-container-component>
                             </div>
                         </div>
                     </template>
 
                     <template v-slot:rodape>
-                        <button type="submit" class="btn btn-primary btn-sm float-right">Pesquisar</button>
+                        <button type="submit" class="btn btn-primary btn-sm float-right" @click="pesquisar()">Pesquisar</button>
                     </template>
                     
                 </card-component>
@@ -90,6 +90,7 @@
                 transacaoStatus: '',
                 transacaoDetalhes: {},
                 marcas: {data: []},
+                busca: {id: '', nome: ''}
             }
         },
         computed: {
@@ -154,6 +155,17 @@
                 if(l.url){
                     this.urlBase = l.url
                     this.carregarLista()
+                }
+            },
+            pesquisar(){
+                let filtro = ''
+
+                for(let chave in this.busca){
+                    if(busca[chave]){
+                        if(filtro != '')
+                            filtro += ';'
+                        filtro += chave + ':like:' + this.busca[chave]
+                    }
                 }
             }
         },
