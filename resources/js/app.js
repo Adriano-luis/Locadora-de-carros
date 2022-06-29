@@ -13,7 +13,9 @@ import Vuex from 'Vuex'
 Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
-        teste: 'Testando o Vuex'
+        item: {
+            
+        }
     }
 })
 
