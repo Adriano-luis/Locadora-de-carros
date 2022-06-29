@@ -29,7 +29,15 @@
                 <!-- Inicio do card de listagem -->
                 <card-component titilo="Relação de Marcas">
                     <template v-slot:conteudo>
-                        <table-component :dados="marcas.data" :visualizar="true" :atualizar="true" :remover="true" :titulos="{
+                        <table-component :dados="marcas.data"
+                            :visualizar="{
+                                visivel: true,
+                                dataToggle: 'modal',
+                                dataTarget: '#modalMarcaVisualizar'
+                            }"
+                            :atualizar="true"
+                            :remover="true"
+                            :titulos="{
                             id: {titulo: 'ID', tipo: 'texto'},
                             nome: {titulo: 'nome', tipo: 'texto'},
                             imagem: {titulo: 'imagem', tipo: 'imagem'},
@@ -55,6 +63,7 @@
             </div>
         </div>
 
+        <!-- Inicio do modal adicionar marca -->
         <modal-component id="modalMarca" titulo="Adicionar Marca">
             <template v-slot:alertas>
                 <alert-component tipo=success :detalhes="transacaoDetalhes" titulo="Cadastro realizado com sucesso" v-if="transacaoStatus == 'adicionado'"></alert-component>
@@ -77,6 +86,20 @@
                 <button type="button" class="btn btn-primary" @click="salvar()">Salvar</button>
             </template>
         </modal-component>
+        <!-- Fim do modal adicionar marca -->
+
+        <!-- Inicio do modal visualizar marca -->
+        <modal-component id="modalMarcaVisualizar" titulo="Visualizar Marca">
+             <template v-slot:alertas>
+            </template>
+            <template v-slot:conteudo>
+               Teste
+            </template>
+            <template v-slot:rodape>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </template>
+        </modal-component>
+        <!-- fim do modal visualizar marca -->
     </div>
 </template>
 
