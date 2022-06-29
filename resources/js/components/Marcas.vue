@@ -29,7 +29,7 @@
                 <!-- Inicio do card de listagem -->
                 <card-component titilo="Relação de Marcas">
                     <template v-slot:conteudo>
-                        <table-component :dados="marcas.data" :titulos="{
+                        <table-component :dados="marcas.data" :visualizar="true" :atualizar="true" :remover="true" :titulos="{
                             id: {titulo: 'ID', tipo: 'texto'},
                             nome: {titulo: 'nome', tipo: 'texto'},
                             imagem: {titulo: 'imagem', tipo: 'imagem'},
