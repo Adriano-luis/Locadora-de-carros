@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th scope="col" v-for="t, key in titulos" :key="key" class="text-uppercase">{{t.titulo}}</th>
-                <th v-if="visualizar.visivel || atualizar || remover">Ações</th>
+                <th v-if="visualizar.visivel || atualizar || remover.visivel">Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -15,10 +15,10 @@
                     </span>
                     <span v-if="titulos[chaveValor].tipo == 'data'">{{valor}}</span>
                 </td>
-                <td v-if="visualizar.visivel || atualizar || remover">
+                <td v-if="visualizar.visivel || atualizar || remover.visivel">
                     <button v-if="visualizar" class="btn btn-outline-primary btn-sm" :data-toggle="visualizar.dataToggle" :data-target="visualizar.dataTarget" @click="setStore(obj)">Visualizar</button>
                     <button v-if="atualizar" class="btn btn-outline-success btn-sm">Atualizar</button>
-                    <button v-if="remover" class="btn btn-outline-danger btn-sm">Remover</button>
+                    <button v-if="remover.visivel" class="btn btn-outline-danger btn-sm" :data-toggle="remover.dataToggle" :data-target="remover.dataTarget" @click="setStore(obj)">Remover</button>
                 </td>
             </tr>
         </tbody>
@@ -37,6 +37,8 @@
         
         methods: {
             setStore(obj){
+                this.$store.state.transacao.status = ''
+                this.$store.state.transacao.detalhes = ''
                 this.$store.state.item = obj
             }
         },

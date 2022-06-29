@@ -22,7 +22,7 @@ class CreateCarrosTable extends Migration
             $table->timestamps();
     
             //foreign key (constraints)
-            $table->foreign('modelo_id')->references('id')->on('modelos');
+            $table->foreign('modelo_id')->references('id')->on('modelos')->onDelete('cascade');
         });
     }
 
