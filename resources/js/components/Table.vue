@@ -13,7 +13,7 @@
                     <span v-if="titulos[chaveValor].tipo == 'imagem'">
                         <img :src="'/public/storage/'+valor" width="35" height="35">
                     </span>
-                    <span v-if="titulos[chaveValor].tipo == 'data'">{{valor}}</span>
+                    <span v-if="titulos[chaveValor].tipo == 'data'">{{valor | formataDataTempoGlobal}}</span>
                 </td>
                 <td v-if="visualizar.visivel || atualizar.visivel || remover.visivel">
                     <button v-if="visualizar.visivel" class="btn btn-outline-primary btn-sm" :data-toggle="visualizar.dataToggle" :data-target="visualizar.dataTarget" @click="setStore(obj)">Visualizar</button>

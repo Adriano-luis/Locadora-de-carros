@@ -8,6 +8,7 @@ require('./bootstrap');
 
 window.Vue = require('vue').default;
 
+import Vue from 'vue';
 //Importing Vuex 3.6.2
 import Vuex from 'Vuex'
 Vue.use(Vuex)
@@ -51,6 +52,22 @@ Vue.component('paginate-component', require('./components/Paginate.vue').default
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
+Vue.filter('formataDataTempoGlobal', function (d){
+    if(!d) return '';
+
+    d = d.split('T');
+    let data = d[0];
+    let tempo = d[1];
+
+    data = data.split('-')
+    data = data[2]+'/'+data[1]+'/'+data[0]
+
+    tempo = tempo.split('.')
+    tempo = tempo[0]
+
+    return data + ' '+tempo
+})
 
 const app = new Vue({
     el: '#app',
