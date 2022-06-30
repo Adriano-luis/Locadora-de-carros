@@ -35,7 +35,11 @@
                                 dataToggle: 'modal',
                                 dataTarget: '#modalMarcaVisualizar'
                             }"
-                            :atualizar="true"
+                            :atualizar="{
+                                visivel: true,
+                                dataToggle: 'modal',
+                                dataTarget: '#modalMarcaAtualizar'
+                            }"
                             :remover="{
                                 visivel: true,
                                 dataToggle: 'modal',
@@ -136,6 +140,31 @@
             </template>
         </modal-component>
         <!-- fim do modal remoção marca -->
+
+        <!-- Inicio do modal atualizar marca -->
+        <modal-component id="modalMarcaAtualizar" titulo="Atualizar Marca">
+            <template v-slot:alertas>
+                <alert-component tipo="success" titulo="Operação realizada com sucesso" :detalhes="$store.state.transacao" v-if="$store.state.transacao.status == 'sucesso'"></alert-component>
+                <alert-component tipo="danger" titulo="Erro na operação realizada" :detalhes="$store.state.transacao" v-if="$store.state.transacao.status == 'erro'"></alert-component>
+            </template>
+            <template v-slot:conteudo>
+                <div class="form-froup">
+                    <input-container-component  titulo="Nome"  id="atualizarNome" id-help="atualizarNomeHelp" texto-ajuda="Informe o nome da Marca.">
+                        <input type="text" class="form-control" id="atualizarNome" aria-describedby="atualizarNomeHelp" v-model="$store.state.item.nome">
+                    </input-container-component>
+                </div>
+                <div class="form-froup">
+                    <input-container-component  titulo="Imagem"  id="atualizarImagem" id-help="atualizarImagemHelp" texto-ajuda="Selecione uma imagem do tipo .png, .jpg ou .jpeg.">
+                        <input type="file" class="form-control-file" id="atualizarImagem" aria-describedby="atualizarImagemHelp" @change="carregarImagem($event)">
+                    </input-container-component>
+                </div>
+            </template>
+            <template v-slot:rodape>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-success" @click="atualizar()">Atualizar</button>
+            </template>
+        </modal-component>
+        <!-- Fim do modal atualizar marca -->
     </div>
 </template>
 
@@ -260,6 +289,37 @@
                     .catch(error =>{
                         this.$store.state.transacao.status = 'erro'
                         this.$store.state.transacao.mensagem = error.response.data.erro
+                    })
+            },
+            atualizar(){
+                let url = this.urlBase+'/'+this.$store.state.item.id
+                
+                let formData = new FormData();
+                formData.append('_method', 'patch')
+                formData.append('nome', this.$store.state.item.nome)
+
+                if(this.arquivoImagem[0])
+                    formData.append('imagem', this.arquivoImagem[0])
+
+                let config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Accept': 'application/json',
+                        'Authorization': this.token
+                    }
+                }
+
+                axios.post(url, formData, config)
+                    .then(response =>{
+                        atualizarImagem.value = ''
+                        this.$store.state.transacao.status = 'sucesso'
+                        this.$store.state.transacao.mensagem = 'Registro de marca atualizado com sucesso'
+                        this.carregarLista()
+                    })
+                    .catch(error =>{
+                        this.$store.state.transacao.status = 'erro'
+                        this.$store.state.transacao.mensagem = error.response.data.message
+                        this.$store.state.transacao.dados = error.response.data.errors
                     })
             }
         },

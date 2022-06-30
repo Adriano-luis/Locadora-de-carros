@@ -18,7 +18,8 @@ const store = new Vuex.Store({
         },
         transacao: {
             status: '',
-            mensagem: ''
+            mensagem: '',
+            dados: ''
         }
     }
 })
